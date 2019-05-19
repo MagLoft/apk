@@ -13,7 +13,7 @@ module.exports.generateApk = async function (packageName, storepass, alias, keyp
   const cwd = dir.name
 
   // Create Keystore
-  const store = new Keystore(path.join(cwd, 'keystore.jks'), storepass)
+  const store = new Keystore(path.join(cwd, 'keystore.jks'), storepass, options)
   await store.genKeyPair(alias, keypass, dname)
 
   // Create Manifest
