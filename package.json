@@ -1,5 +1,5 @@
 {
-  "name": "apk",
+  "name": "apkman",
   "version": "1.0.0",
   "description": "Generate blank signed Android APKs as placeholder apps for Google Play Console",
   "main": "index.js",

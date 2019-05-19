@@ -1,4 +1,4 @@
-# APK
+# APKMAN
 
 > Generate blank signed Android APKs as placeholder apps for Google Play Console
 
@@ -10,16 +10,16 @@ Once uploaded, you can interact with the Google Play Developer API via the speci
 
 ## Installation
 
-`yarn add apk`
+`yarn add apkman`
 
 OR
 
-`npm install apk`
+`npm install apkman`
 
 ## Usage
 
 ```js
-const { generateApk } = require('apk')
+const { generateApk } = require('apkman')
 
 const buffer = await generateApk(packageName, storePass, alias, keyPass, options)
 fs.writeFileSync('app-release.apk', buffer
@@ -51,4 +51,4 @@ fs.writeFileSync('app-release.apk', buffer
 
 ## License
 
-`apk` is available under an MIT-style license.
+`apkman` is available under an MIT-style license.
