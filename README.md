@@ -21,8 +21,32 @@ OR
 ```js
 const { generateApk } = require('apk')
 
-const buffer = await generateApk(packageName, storePass, alias, keyPass)
+const buffer = await generateApk(packageName, storePass, alias, keyPass, options)
 fs.writeFileSync('app-release.apk', buffer
+```
+
+## Options & Defaults
+
+```js
+{
+  targetSdkVersion: 28,           // Target Android SDK Version
+  buildToolsVersion: '28.0.3',    // Target Android Build Tools Version
+  validity: 10000,                // Keystore Certificate Validity in Days
+  keysize: 2048,                  // Keystore Key Size
+  keyalg: 'RSA',                  // Keystore Key Algorithm
+  sigalg: 'SHA1withRSA',          // Keystore Signature Algorithm
+  destalias: null,                // Keystore Destination Alias
+  startdate: new Date(),          // Keystore Start Date
+  x509ext: [],                    // Keystore Extensions
+  dname: {                        // Keystore DN Record
+    commonName: 'John Doe',
+    organizationUnit: 'IT',
+    organizationName: 'Sample Inc.',
+    localityName: 'Singapore',
+    stateName: 'Singapore',
+    country: 'SG'
+  }
+}
 ```
 
 ## License
