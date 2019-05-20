@@ -6,6 +6,13 @@
       "request": "launch",
       "name": "Test",
       "program": "${workspaceFolder}/test.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run",
+      "program": "${workspaceFolder}/bin/apkman",
+      "args": ["create", "com.package.sample", "keystore.jks", "app-release.apk", "-v", "-f"]
     }
   ]
 }

@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const { generate } = require('generate-password')
+const { generateApk, Keystore } = require('../index')
+
+function log(message, verbose) {
+  if (verbose) {
+    process.stdout.write(`~> ${message}\n`)
+  }
+}
+
+/* eslint-disable-next-line */
+require('yargs').command('create [packageName] [keystorePath] [apkPath]', 'Create android APK at outputPath', (args) => {
+  args.positional('packageName', { describe: 'desired APK package name' })
+  args.positional('keystorePath', { describe: 'existing or desired Keystore output path' })
+  args.positional('apkPath', { describe: 'desired APK output path' })
+}, async ({ packageName, keystorePath, apkPath, storepass, alias, keypass, verbose, force }) => {
+  // Delete existing keystore if force is set
+  if (fs.existsSync(keystorePath) && force) {
+    fs.unlinkSync(keystorePath)
+  }
+
+  // Load or create keystore
+  const keystore = new Keystore(keystorePath, storepass)
+  if (fs.existsSync(keystorePath)) {
+    log('opening existing keystore', verbose)
+    await keystore.verifyKey(alias, keypass)
+  } else {
+    log('creating new keystore', verbose)
+    await keystore.create(alias, keypass)
+    const keystoreJson = JSON.stringify({ storepass, alias, keypass }, null, 2)
+    fs.writeFileSync(`${keystorePath}.json`, keystoreJson, 'utf8')
+    log(`keystore credentials saved to ${keystorePath}.json`, verbose)
+  }
+
+  // Generate APK
+  log('generating apk', verbose)
+  const buffer = await generateApk(packageName, keystore, alias, keypass)
+  fs.writeFileSync(apkPath, buffer)
+  log(`apk saved to ${apkPath}`, verbose)
+}).option('storepass', {
+  alias: 's',
+  default: generate({ length: 16, numbers: true })
+}).option('alias', {
+  alias: 'a',
+  default: 'app'
+}).option('keypass', {
+  alias: 'k',
+  default: generate({ length: 16, numbers: true })
+}).option('force', {
+  alias: 'f',
+  description: 'override existing keystore'
+}).option('verbose', {
+  alias: 'v',
+  description: 'print verbose output',
+  default: false,
+  type: 'boolean'
+}).argv

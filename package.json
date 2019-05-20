@@ -8,11 +8,17 @@
     "node": ">=v8.11.1"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "run": "bin/apkman"
+  },
+  "bin": {
+    "apkman": "bin/apkman"
   },
   "dependencies": {
+    "generate-password": "^1.4.1",
     "node-keytool": "^0.0.3",
-    "tmp": "^0.1.0"
+    "tmp": "^0.1.0",
+    "yargs": "^13.2.4"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

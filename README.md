@@ -18,19 +18,33 @@ OR
 
 ## Usage
 
+Using a new Keystore
 ```js
-const { generateApk } = require('apkman')
+const { generateApk, Keystore } = require('apkman')
 
-const buffer = await generateApk(packageName, storePass, alias, keyPass, options)
+const store = new Keystore('./keystore.jks', 'mystorepass')
+await store.create('myalias', 'mykeypass')
+
+const buffer = await generateApk('com.package.example', store, 'myalias', 'mykeypass')
 fs.writeFileSync('app-release.apk', buffer
 ```
 
-## Options & Defaults
-
+Using an existing Keystore
 ```js
-{
-  targetSdkVersion: 28,           // Target Android SDK Version
-  buildToolsVersion: '28.0.3',    // Target Android Build Tools Version
+const { generateApk, Keystore } = require('apkman')
+
+const store = new Keystore('./keystore.jks', 'mystorepass')
+await store.verifyKey('myalias', 'mykeypass')
+
+const buffer = await generateApk('com.package.example', store, 'myalias', 'mykeypass')
+fs.writeFileSync('app-release.apk', buffer
+```
+
+## Methods
+
+Initialize Keystore:
+```js
+new Keystore(filename, storepass, options = {
   validity: 10000,                // Keystore Certificate Validity in Days
   keysize: 2048,                  // Keystore Key Size
   keyalg: 'RSA',                  // Keystore Key Algorithm
@@ -38,15 +52,54 @@ fs.writeFileSync('app-release.apk', buffer
   destalias: null,                // Keystore Destination Alias
   startdate: new Date(),          // Keystore Start Date
   x509ext: [],                    // Keystore Extensions
-  dname: {                        // Keystore DN Record
-    commonName: 'John Doe',
-    organizationUnit: 'IT',
-    organizationName: 'Sample Inc.',
-    localityName: 'Singapore',
-    stateName: 'Singapore',
-    country: 'SG'
-  }
-}
+})
+```
+
+Create new key:
+```js
+await keystore.create(alias, keypass, dname = {
+  commonName: 'John Doe',
+  organizationUnit: 'IT',
+  organizationName: 'Sample Inc.',
+  localityName: 'Singapore',
+  stateName: 'Singapore',
+  country: 'SG'
+})
+```
+
+Verify existing key:
+```js
+await keystore.verifyKey(alias, keypass)
+```
+
+Generate APK:
+```js
+await apkman.generateApk(packageName, keystore, alias, keypass, options = {
+  targetSdkVersion: 28,           // Target Android SDK Version
+  buildToolsVersion: '28.0.3',    // Target Android Build Tools Version
+})
+```
+
+## Synopsis
+
+```
+apkman create [packageName] [keystorePath] [apkPath]
+
+Create android APK at outputPath
+
+Arguments:
+  packageName   desired APK package name
+  keystorePath  existing or desired Keystore output path
+  apkPath       desired APK output path
+
+Options:
+  -s, --storepass                                     [default: random password]
+  -a, --alias                                                   [default: "app"]
+  -k, --keypass                                       [default: random password]
+  -f, --force      override existing keystore         [boolean] [default: false]
+  -v, --verbose    print verbose output               [boolean] [default: false]
+  --help           Show help                                           [boolean]
+  --version        Show version number                                 [boolean]
 ```
 
 ## License
